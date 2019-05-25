@@ -37,8 +37,8 @@ export function registerFileProtocol(
 	getRoots: () => ReadonlyArray<URI>
 ) {
 	contents.session.protocol.registerBufferProtocol(protocol, (request, callback: any) => {
-		const requestPath = URI.parse(request.url).path;
-		const normalizedPath = URI.file(requestPath);
+		const uri = URI.parse(request.url);
+		const normalizedPath = URI.file(uri.authority ? `//${uri.authority}${uri.path}` : uri.path);
 		for (const root of getRoots()) {
 			if (!startsWith(normalizedPath.fsPath, root.fsPath + sep)) {
 				continue;
