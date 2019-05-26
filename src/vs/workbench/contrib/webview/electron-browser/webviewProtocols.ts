@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 import { getMediaMime, MIME_UNKNOWN } from 'vs/base/common/mime';
 import { extname, sep } from 'vs/base/common/path';
-import { startsWith } from 'vs/base/common/strings';
+import { startsWith, endsWith } from 'vs/base/common/strings';
 import { URI } from 'vs/base/common/uri';
 import { REMOTE_HOST_SCHEME } from 'vs/platform/remote/common/remoteHosts';
 import { IFileService } from 'vs/platform/files/common/files';
@@ -40,7 +40,8 @@ export function registerFileProtocol(
 		const uri = URI.parse(request.url);
 		const normalizedPath = URI.file(uri.authority ? `//${uri.authority}${uri.path}` : uri.path);
 		for (const root of getRoots()) {
-			if (!startsWith(normalizedPath.fsPath, root.fsPath + sep)) {
+			const rootPath = root.fsPath + (endsWith(root.fsPath, sep) ? '' : sep);
+			if (!startsWith(normalizedPath.fsPath, rootPath)) {
 				continue;
 			}
 
